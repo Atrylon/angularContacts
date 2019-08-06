@@ -1,1 +1,21 @@
-<p>details works!</p>
+<section *ngIf="contact">
+    <div>
+        <h2>
+            <a (click)="hide();"><i class="fas fa-arrow-left"></i></a>
+            {{contact.name.last|uppercase}} {{contact.name.first}}
+        </h2>
+    </div>
+    <div class="jumbotron">
+            <img [src]="contact.picture.large" class="img-thumbnail float-left mr-3" width="128">
+            <ul>
+                <li>
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>{{ contact.phone }}</span>
+                </li>
+                <li>
+                    <i class="far fa-envelope-open"></i>
+                    <span>{{ contact.email }}</span>
+                </li>
+            </ul>
+    </div>
+</section>

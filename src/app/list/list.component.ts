@@ -1,4 +1,4 @@
-import { Component, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
 import { ContactService } from '../contact.service';
 
 @Component({
@@ -7,81 +7,73 @@ import { ContactService } from '../contact.service';
   styleUrls: ['./list.component.css']
 })
 export class ListComponent implements OnInit {
-  // BASE_URL:string= "https://randomuser.me/api/?inc=gender,name,picture,email,phone,registered&results=20&nat=fr";
   contacts;
-  contactsfav;
-  contactsfound;
+  isVisible:boolean=true;
+  contactsfav = [];
+  contactsfound = [];
 
-  constructor(
-    private contactService:ContactService
-    ) {
+  constructor(private contactService:ContactService) {
 
    }
 
   ngOnInit() {
     this.contactService.getContacts().subscribe(
       data => {
-            this.contacts = data['results'];
-            for (var i = 0; i < this.contacts.length; i++) {
-                this.contacts[i].favori = false;
-            }
-            this.contactsfound = [...this.contacts];
-            this.contactsfav = [...this.contacts];
-            this.contactsfav = this.contactsfav.filter(contact => contact.favori==true);
-            console.log(this.contacts);
+          this.contacts = data['results'];
+          for (var i = 0; i < this.contacts.length; i++) {
+              this.contacts[i].favori = false;
           }
-    );
-
-    // this.http.get(this.BASE_URL).subscribe(
-    //   data => {
-    //     this.contacts = data['results'];
-    //     for (var i = 0; i < this.contacts.length; i++) {
-    //         this.contacts[i].favori = false;
-    //     }
-    //     this.contactsfound = [...this.contacts];
-    //     this.contactsfav = [...this.contacts];
-    //     this.contactsfav = this.contactsfav.filter(contact => contact.favori==true);
-    //     console.log(this.contacts);
-    //   }
-    // )
-
-    // this.contacts=[
-    //   {name:"Jessica", number:"0666666666", favori:false, dateAjout:"01/10/2010", photo:"https://i2.wp.com/www.lecoindunet.com/wp-content/uploads/2018/10/contact_android.png?fit=300%2C300&ssl=1"},
-    //   {name:"Aurelien", number:"0777777777", favori:false, dateAjout:"02/25/1998", photo:"https://i2.wp.com/www.lecoindunet.com/wp-content/uploads/2018/10/contact_android.png?fit=300%2C300&ssl=1"},
-    //   {name:"Maman", number:"0888888888", favori:false, dateAjout:"05/11/2018", photo:"https://i2.wp.com/www.lecoindunet.com/wp-content/uploads/2018/10/contact_android.png?fit=300%2C300&ssl=1"}
-    // ]
+          this.contactsfound = [...this.contacts];
+          this.contactsfav = [...this.contacts];
+          this.contactsfav = this.contactsfav.filter(contact => contact.favori==true);
+          
+          this.contactService.contactsFavoriSubject.next(this.contactsfav);
+          // console.log(this.contacts);
+        }
+    )
+    this.contactService.isVisible.subscribe( data => {
+      if(data === true || data === false){
+        this.isVisible = data;
+      }
+    })
   }
 
-  ngOnChanges(changes: SimpleChanges){
-    this.contactsfav = this.contactsfav.filter(contact => contact.favori==true);
-  }
+  // ngOnChanges(changes: SimpleChanges){
+  //   this.contactsfav = this.contactsfav.filter(contact => contact.favori==true);
+  // }
 
-  ajouterContact(){
+  // ajouterContact(){
 
-  }
+  // }
 
   favoriContact(index:number){
-    this.contacts[index].favori = !this.contacts[index].favori;
+    this.contactsfound[index].favori = !this.contactsfound[index].favori;
+    // console.log(this.contactsfound, index);
     this.contactsfav = this.contacts.filter(contact => contact.favori==true);
-  }
-
-  favoriContactFromFav(index:number){
-    this.contactsfav[index].favori = !this.contactsfav[index].favori;
-    this.contactsfav = this.contacts.filter(contact => contact.favori==true);
+    
+    this.contactService.contactsFavoriSubject.next(this.contactsfav);
   }
 
   supprimerContact(index:number){
     this.contacts.splice(index,1);
     this.contactsfound = [...this.contacts];
     this.contactsfav = this.contacts.filter(contact => contact.favori==true);
+
+    this.contactService.contactsFavoriSubject.next(this.contactsfav);
   }
 
   searchContact(event){
     let search = this.contacts.filter(function(contact){
       return contact.name.last.toLowerCase().includes(event.target.value.toLowerCase())||contact.name.first.toLowerCase().includes(event.target.value.toLowerCase());
-    });
-    console.log(search);
+    })
     this.contactsfound = search;
+  }
+
+  showDetailsAction(contact){
+    this.isVisible = false;
+
+    this.contactService.contactSubject.next(contact);
+    // this.router.navigate(['/details', contact]);
   }
 
 }

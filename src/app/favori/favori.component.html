@@ -1,0 +1,16 @@
+<div id="favori" class="card card-body bg-light">
+    <h3 class="text-center">Favoris</h3>
+    <ul class="list-group">
+        <li (click)="showDetailsAction(contact)"
+             class="list-group-item" *ngFor="let contact of contactsfav; let i = index" [attr.data-index]="i">
+            <img id="photo" [src]="contact.picture.medium">
+            {{ contact.name.last|uppercase }} {{ contact.name.first }}
+            <div class="float-right">
+                <button type="button" class="btn-sm btn-default" (click)="favoriContactFromFav(i)">
+                    <i *ngIf="contact.favori==false" class="far fa-star"></i> 
+                    <i *ngIf="contact.favori==true" class="fas fa-star"></i> 
+                </button>
+            </div>
+        </li>
+    </ul>
+</div>

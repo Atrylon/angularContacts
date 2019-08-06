@@ -6,6 +6,10 @@ li text{
     font-size:0.8em;
 }
 
+li:hover{
+  background-color: #e4e4e4;
+}
+
 /* #favori{
     min-width:100%;
 } */
