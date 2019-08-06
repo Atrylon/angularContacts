@@ -1,0 +1,50 @@
+
+<div class="row">
+    <div id="favori" class="col-5 card card-body bg-light">
+        <h3 class="text-center">Favoris</h3>
+        <ul class="list-group">
+            <li class="list-group-item" *ngFor="let contact of contactsfav; let i = index" [attr.data-index]="i">
+                <img id="photo" [src]="contact.picture.large">
+                {{ contact.name.last|uppercase }} {{ contact.name.first }}
+                <div class="float-right">
+                    <button type="button" class="btn-sm btn-default" (click)="favoriContactFromFav(i)">
+                        <i *ngIf="contact.favori==false" class="far fa-star"></i> 
+                        <i *ngIf="contact.favori==true" class="fas fa-star"></i> 
+                    </button>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="col-7">
+        <!-- <div class="form-group">
+        Nom du contact : <input class="form-control" #name type="text">
+        Numéro du contact : <input class="form-control" #number type="tel">
+        <button type="button" class="btn btn-primary" (click)="ajouterContact()">Ajouter contact</button>
+    </div> -->
+        <div class="form-group">
+            Rechercher un contact : <input class="form-control" (keyup)="searchContact($event)" type="text">
+        </div>
+        
+        <ul class="list-group">
+            <li class="list-group-item" *ngFor="let contact of contactsfound; let i = index" [attr.data-index]="i">
+                <div class="float-left">
+                    <img id="photo" [src]="contact.picture.large">
+                    {{ contact.name.last|uppercase}} {{ contact.name.first }}
+                </div>
+                <div class="float-right">
+                    ajouté le {{contact.registered.date |date:'dd/MM/yyyy'}}
+                    <button type="button" class="btn-sm btn-default" (click)="favoriContact(i)">
+                        <i *ngIf="contact.favori==false" class="far fa-star"></i> 
+                        <i *ngIf="contact.favori==true" class="fas fa-star"></i> 
+                     </button>
+                    <button type="button" class="btn-sm btn-danger" (click)="supprimerContact(i)"><i class="far fa-trash-alt"></i> </button>
+                </div>
+            </li>
+        </ul>
+        
+    </div>
+</div>
+
+<script>
+    this.contactsfav = this.contacts.filter(contact => contact.favori==true);
+</script>
